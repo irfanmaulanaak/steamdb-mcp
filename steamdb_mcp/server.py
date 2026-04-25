@@ -364,10 +364,13 @@ async def _get_recent_news(args: dict) -> list[TextContent]:
 # ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
-async def main():
+async def _async_main():
     from mcp.server.stdio import stdio_server
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())
 
+def main():
+    asyncio.run(_async_main())
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

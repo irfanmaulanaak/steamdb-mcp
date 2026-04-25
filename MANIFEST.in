@@ -1,0 +1,9 @@
+global-exclude bin/*
+global-exclude lib/*
+global-exclude lib64/*
+global-exclude include/*
+global-exclude pyvenv.cfg
+prune bin
+prune lib
+prune lib64
+prune include
