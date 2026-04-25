@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Games/Entertainment",
+    "Framework :: MCP",
 ]
 dependencies = [
     "mcp>=1.20",
@@ -30,9 +31,9 @@ dependencies = [
 steamdb-mcp = "steamdb_mcp.server:main"
 
 [project.urls]
-Homepage = "https://github.com/irfanmaulana/steamdb-mcp"
-Repository = "https://github.com/irfanmaulana/steamdb-mcp"
-Issues = "https://github.com/irfanmaulana/steamdb-mcp/issues"
+Homepage = "https://github.com/irfanmaulanaak/steamdb-mcp"
+Repository = "https://github.com/irfanmaulanaak/steamdb-mcp"
+Issues = "https://github.com/irfanmaulanaak/steamdb-mcp/issues"
 
 [build-system]
 requires = ["hatchling"]

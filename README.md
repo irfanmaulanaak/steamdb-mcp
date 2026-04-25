@@ -1,79 +1,140 @@
 # SteamDB MCP Server
 
-A custom MCP (Model Context Protocol) server for querying **Steam** and **SteamDB-style** data.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for querying **Steam** and **SteamDB-style** data. Search games, check live player counts, view price info, browse top charts, and more — all from your AI assistant.
 
-## Features
+[![PyPI](https://img.shields.io/badge/pypi-steamdb--mcp-blue)](https://pypi.org/project/steamdb-mcp/)
+[![GitHub](https://img.shields.io/badge/github-irfanmaulanaak%2Fsteamdb--mcp-black)](https://github.com/irfanmaulanaak/steamdb-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## ✅ Features
 
 | Tool | Description |
 |------|-------------|
-| `search_games` | Search Steam store by keyword |
-| `get_game_details` | Full app info (price, genres, release date, screenshots, etc.) |
-| `get_player_count` | Live concurrent players for any app |
-| `get_top_games` | Top games by player count (via SteamSpy) |
-| `get_player_history` | 24h peaks + ownership stats (SteamSpy fallback) |
+| `search_games` | Search the Steam store by keyword |
+| `get_game_details` | Full app info: price, genres, release date, screenshots, etc. |
+| `get_player_count` | Live concurrent players for any Steam app |
+| `get_top_games` | Top games by current player count |
+| `get_player_history` | 24h peaks + ownership stats |
 | `get_price_history` | Current Steam price overview |
 | `get_wishlist` | Fetch a public Steam wishlist |
-| `get_user_library` | Owned games + playtime (requires Steam API key) |
-| `get_recent_news` | Latest news articles for an app |
+| `get_user_library` | Owned games + playtime (**requires Steam API key**) |
+| `get_recent_news` | Latest news articles for a game |
 
-## Setup
+## 🚀 Quick Start
 
-### 1. Install dependencies
-
-```bash
-uv venv steamdb-mcp
-source steamdb-mcp/bin/activate
-uv pip install mcp httpx beautifulsoup4
-```
-
-Or with `pip`:
+### Option 1: uvx (recommended — fastest, no install)
 
 ```bash
-python -m venv steamdb-mcp
-source steamdb-mcp/bin/activate
-pip install mcp httpx beautifulsoup4
+# Run directly without installing
+uvx steamdb-mcp
 ```
 
-### 2. Get a Steam API Key (optional)
+### Option 2: pip install
 
-Only needed for `get_user_library`. Get one free at:
-https://steamcommunity.com/dev/apikey
+```bash
+pip install steamdb-mcp
+steamdb-mcp
+```
 
-### 3. Configure MCP client
+### Option 3: From source
 
-Add to your MCP config (Claude Desktop, Hermes, etc.):
+```bash
+git clone https://github.com/irfanmaulanaak/steamdb-mcp.git
+cd steamdb-mcp
+uv pip install -e .
+steamdb-mcp
+```
 
-**Stdio mode (recommended):**
+## ⚙️ MCP Client Configuration
+
+Add to your MCP client config (Claude Desktop, Hermes, Cursor, etc.):
+
+### Using uvx (recommended)
 
 ```json
 {
   "mcpServers": {
     "steamdb": {
-      "command": "/home/USER/steamdb-mcp/bin/python",
-      "args": ["/home/USER/steamdb-mcp/server.py"],
+      "command": "uvx",
+      "args": ["steamdb-mcp"]
+    }
+  }
+}
+```
+
+### Using pip
+
+```json
+{
+  "mcpServers": {
+    "steamdb": {
+      "command": "steamdb-mcp"
+    }
+  }
+}
+```
+
+### With Steam API Key (optional)
+
+Only needed for `get_user_library`:
+
+```json
+{
+  "mcpServers": {
+    "steamdb": {
+      "command": "uvx",
+      "args": ["steamdb-mcp"],
       "env": {
-        "STEAM_API_KEY": "your_key_here"
+        "STEAM_API_KEY": "your_steam_api_key_here"
       }
     }
   }
 }
 ```
 
-> Replace `/home/USER` with your actual home path.
+Get a free Steam API key at: https://steamcommunity.com/dev/apikey
 
-### 4. Restart your MCP client
+## 📜 Hermes Agent Config
 
-The tools will appear automatically.
+For [Hermes Agent](https://github.com/hermes) users, add to `~/.hermes/config.yaml`:
 
-## Notes
+```yaml
+mcp_servers:
+  steamdb:
+    command: "uvx"
+    args: ["steamdb-mcp"]
+    env:
+      STEAM_API_KEY: ""
+```
 
-- **SteamDB** itself has no official public API for most data. This server combines:
-  - Steam Web API (player counts, news, libraries)
-  - Steam Store API (game details, search, prices)
-  - SteamSpy API (top charts, ownership estimates, tags)
-- Price history uses IsThereAnyDeal (limited without API key).
-- Wishlists must be **public** to be readable.
+## 🔧 Example Usage
 
-## License
+Once connected, ask your AI assistant things like:
 
-MIT — do whatever you want.
+- *"Search for Forza Horizon 6 on Steam"*
+- *"How many players are currently playing Elden Ring?"*
+- *"What's the price of Crimson Desert?"*
+- *"Show me the top 10 games on Steam right now"*
+- *"Get recent news for Counter-Strike 2"*
+
+## 📦 Data Sources
+
+This server combines multiple public APIs:
+- **Steam Web API** — player counts, news, user libraries
+- **Steam Store API** — game details, search, prices
+- **SteamSpy** — top charts, ownership estimates, tags
+
+> Note: SteamDB itself does not have an official public API. This server provides SteamDB-*style* data by aggregating the above sources.
+
+## 📝 Requirements
+
+- Python 3.10+
+- (Optional) A Steam Web API key for `get_user_library`
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE)
+
+## 👍 Contributing
+
+Issues and PRs welcome! https://github.com/irfanmaulanaak/steamdb-mcp/issues
