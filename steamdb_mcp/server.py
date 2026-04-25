@@ -293,9 +293,24 @@ async def _get_price_history(args: dict) -> list[TextContent]:
     result = {"appid": appid, "note": "Full history requires ITAD API key. Showing current overview."}
     # Fallback to Steam store price
     try:
-        steam = await fetch_json("https://store.steampowered.com/api/appdetails", {"appids": appid, "cc": region.upper(), "filters": "price_overview"})
-        d = steam.get(str(appid), {}).get("data", {})
-        result["steam_price"] = d.get("price_overview")
+        steam = await fetch_json("https://store.steampowered.com/api/appdetails", {"appids": appid, "cc": region.upper(), "l": "en"})
+        if not isinstance(steam, dict):
+            result["steam_price_error"] = f"Unexpected response type: {type(steam).__name__}"
+        else:
+            app_data = steam.get(str(appid), {})
+            if isinstance(app_data, list):
+                result["steam_price_error"] = "Unexpected app_data type: list"
+            elif isinstance(app_data, dict) and app_data.get("success"):
+                d = app_data.get("data", {})
+                if isinstance(d, dict):
+                    result["steam_price"] = d.get("price_overview")
+                    result["is_free"] = d.get("is_free", False)
+                    if d.get("is_free"):
+                        result["steam_price_note"] = "Game is free-to-play"
+                else:
+                    result["steam_price_error"] = f"Unexpected data type: {type(d).__name__}"
+            else:
+                result["steam_price_error"] = "App data unavailable or app not found"
     except Exception as e:
         result["steam_price_error"] = str(e)
     return [TextContent(type="text", text=json.dumps(result, indent=2))]

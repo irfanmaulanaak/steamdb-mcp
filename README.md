@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for que
 | `get_player_count` | Live concurrent players for any Steam app |
 | `get_top_games` | Top games by current player count |
 | `get_player_history` | 24h peaks + ownership stats |
-| `get_price_history` | Current Steam price overview |
+| `get_price_history` | Current Steam price + historical data via ITAD |
 | `get_wishlist` | Fetch a public Steam wishlist |
 | `get_user_library` | Owned games + playtime (**requires Steam API key**) |
 | `get_recent_news` | Latest news articles for a game |
@@ -94,6 +94,32 @@ Only needed for `get_user_library`:
 
 Get a free Steam API key at: https://steamcommunity.com/dev/apikey
 
+### With ITAD API Key (optional — for full price history)
+
+Only needed for **full historical price data** via `get_price_history`:
+
+1. Go to https://isthereanydeal.com/apps/
+2. Sign in with a regular ITAD account (or create one)
+3. Register a new app (e.g., name it `steamdb-mcp`)
+4. Copy the generated **API key**
+5. Add it to your MCP server config:
+
+```json
+{
+  "mcpServers": {
+    "steamdb": {
+      "command": "uvx",
+      "args": ["steamdb-mcp"],
+      "env": {
+        "ITAD_API_KEY": "your_itad_api_key_here"
+      }
+    }
+  }
+}
+```
+
+> Without an ITAD API key, `get_price_history` will still return the **current Steam price** for any game, but historical data and store comparisons will not be available.
+
 ## 📜 Hermes Agent Config
 
 For [Hermes Agent](https://github.com/hermes) users, add to `~/.hermes/config.yaml`:
@@ -103,8 +129,24 @@ mcp_servers:
   steamdb:
     command: "uvx"
     args: ["steamdb-mcp"]
+    timeout: 120
+    connect_timeout: 60
+```
+
+> After adding the server to the config, **restart Hermes** for the change to take effect.
+
+Optional environment variables:
+
+```yaml
+mcp_servers:
+  steamdb:
+    command: "uvx"
+    args: ["steamdb-mcp"]
+    timeout: 120
+    connect_timeout: 60
     env:
-      STEAM_API_KEY: ""
+      STEAM_API_KEY: ""      # Required only for get_user_library
+      ITAD_API_KEY: ""       # Required only for full price history
 ```
 
 ## 🔧 Example Usage
