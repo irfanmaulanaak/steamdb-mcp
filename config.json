@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "steamdb": {
+      "command": "/opt/data/home/steamdb-mcp/bin/python",
+      "args": ["/opt/data/home/steamdb-mcp/server.py"],
+      "env": {
+        "STEAM_API_KEY": ""
+      }
+    }
+  }
+}
